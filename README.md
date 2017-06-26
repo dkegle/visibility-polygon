@@ -1,6 +1,14 @@
 # visibility-polygon
-Line sweep algorithm
+##### Problem
 
-This algorithm solves the following problem: given a polygon P and a point z in it's interior, calculate polygon in P that is visible from z.
+We solve the following problem: given a polygon P and a point z in it's interior (called a viewpoint), calculate the largest polygon that is contained P which is visible from viewpoint z.
 
-It uses line sweep by angle. State consists of lines which intersect ray at current angle, ordered by distance from point z. Events are starting and ending points of lines.
+##### Solution
+
+This implementation uses sweep line approach. It sweeps through points in P ordered by angle. State consists of lines which intersect ray at current angle, ordered by distance from viewpoint z. Events are starting and ending points of lines. Top lines in state define our solution.
+
+Asymptotic complexity is O(nlog n), since we are sorting events.
+
+Some results are shown in the image below.
+
+![](img/examples.png)
