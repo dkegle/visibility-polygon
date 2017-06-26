@@ -123,7 +123,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
    // loop through events
    for (int i = 0; i < events.size(); ++i) {
       int j = i;
-      // handle events at the same angle
+      // handle events at the (roughly) same angle
       while (i < events.size() && abs(events[i]->angle - events[j]->angle) < GEOM_PRECISION) {
          // remove lines that have ended
          if (events[i]->p_orig == events[i]->edge_1->to)
@@ -168,8 +168,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
                      break;
                   result.push_back(*events[k]->p_orig);
                }
-               if(EuclideanDistance(result.back(), intr) > GEOM_PRECISION)
-                  result.push_back(intr);
+               result.push_back(intr);
             }
             else if (events[j]->p_orig == prev_top->to) {
                result.push_back(*prev_top->to);
@@ -181,8 +180,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
                      break;
                   result.push_back(*events[k]->p_orig);
                }
-               if (EuclideanDistance(result.back(), intr) > GEOM_PRECISION)
-                  result.push_back(intr);
+               result.push_back(intr);
             }
             prev_top = *state.begin();
          }
