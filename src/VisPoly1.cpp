@@ -118,7 +118,6 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
    std::cout << "Sweeping .. " << std::endl;
    Edge* prev_top = *state.begin();
 
-   // TODO: refactor this
    // farthest edge in state that doesn't have endpoint in ray through ev
    // or has successor on the other side of ray
    auto getFarthest = [&state, &view_point](std::shared_ptr<Event>& ev) {

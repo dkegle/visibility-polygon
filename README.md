@@ -12,3 +12,9 @@ Asymptotic complexity is O(nlog n), since we are sorting events.
 Some results are shown in the image below.
 
 ![](img/examples.png)
+
+
+
+The algorithm also correctly handles special cases where several points lie at the same angle:
+
+![](img/degenerate.png)
