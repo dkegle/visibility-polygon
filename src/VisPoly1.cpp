@@ -7,7 +7,8 @@
 
 #include "VisPoly1.h"
 
-// assuming plg[0] == plg[plg.size() - 1]
+// assuming view_point is in interior of plg,
+// and plg[0] == plg[plg.size() - 1]
 Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
    if (plg.size() < 3)
       return Polygon();
@@ -68,6 +69,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
       }
    };
 
+   // make events and initial state
    for (unsigned i = 0; i < plg.size() - 2; ++i) {  // loop through input vertices
       p1_angle = getAngle(Point(1.0, 0.0), plg[i] - view_point);
       p2_angle = getAngle(Point(1.0, 0.0), plg[i + 1] - view_point);
@@ -109,62 +111,26 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
    std::sort(events.begin(), events.end(), ev);
 
    if (state.empty()) {
-      std::cout << "Error, view point not inside polygon, exiting" << std::endl;
+      std::cout << "Error, initial state empty, exiting" << std::endl;
       return Polygon();
    }
 
    // sweeping
    Polygon result;
    std::cout << "Sweeping .. " << std::endl;
+
    Edge* prev_top = *state.begin();
-
-   // farthest edge in state that doesn't have endpoint in ray through ev
-   // or has successor on the other side of ray
-   auto getFarthest = [&state, &view_point](std::shared_ptr<Event>& ev) {
-      Edge* farthest = nullptr;
-      double max_dist = -1.0;
-      if (!state.empty()) {
-         farthest = *state.begin();
-         Point cur;
-         Line r(view_point, *ev->p_orig);
-         intersection(Line(*farthest->from, *farthest->to), r, cur);
-         max_dist = EuclideanDistance(view_point, cur);
-         for (auto e : state) {
-            Point p;
-            intersection(Line(*e->from, *e->to), r, p);
-            double cur_dist = EuclideanDistance(view_point, p);
-            if (cur_dist > max_dist) {
-               farthest = e;
-               max_dist = cur_dist;
-            }
-            if (e->next->p1_angle - ev->angle > 0.0 ||
-               e->next->p2_angle - ev->angle > 0.0)
-            {
-               break;
-            }
-
-            if (abs(ev->angle - e->p1_angle) > 0.0 &&
-               abs(ev->angle - e->p2_angle) > 0.0)
-            {
-               break;
-            }
-         }
-      }
-      return std::make_pair(farthest, max_dist);
-   };
-
    // loop through events
    for (int i = 0; i < events.size(); ++i) {
-      // save previous farthest edge at this angle
-      std::pair<Edge*, double> farthest = getFarthest(events[i]);
-
       int j = i;
-      // add all events at the same angle
+      // handle events at the same angle
       while (i < events.size() && abs(events[i]->angle - events[j]->angle) < GEOM_PRECISION) {
+         // remove lines that have ended
          if (events[i]->p_orig == events[i]->edge_1->to)
             state.erase(events[i]->edge_1.get());
          if (events[i]->p_orig == events[i]->edge_2->to)
             state.erase(events[i]->edge_2.get());
+         // add lines that have started but not ended
          bool cond_e1 = abs(events[i]->edge_1->p1_angle - events[i]->edge_1->p2_angle) > GEOM_PRECISION;
          bool cond_e2 = abs(events[i]->edge_2->p1_angle - events[i]->edge_2->p2_angle) > GEOM_PRECISION;
          if (events[i]->p_orig == events[i]->edge_1->from && cond_e1)
@@ -174,9 +140,6 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
          ++i;
       }
       --i;
-
-      // new farthest edge at this angle
-      std::pair<Edge*, double> new_farthest = getFarthest(events[i]);
 
       // handle visible points
       if (state.empty()) { // rounding errors
@@ -192,43 +155,34 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
                result.push_back(*top->from);
             }
             else if (events[j]->p_orig == top->from) {
-               Edge* pt = farthest.second > new_farthest.second ? farthest.first : new_farthest.first;
                if (i != j) {
                   Point p; // collinear vertices, add previous farthest
                   intersection(Line(*prev_top->from, *prev_top->to), Line(view_point, *events[j]->p_orig), p);
                   result.push_back(p);
                }
-               Point prev_intr;
-               intersection(Line(*pt->from, *pt->to), Line(view_point, *events[j]->p_orig), prev_intr);
-               result.push_back(prev_intr);
-               double max_dist = EuclideanDistance(view_point, prev_intr);
+               Point intr;
+               intersection(Line(*top->from, *top->to), Line(view_point, *events[j]->p_orig), intr);
+               double dist = EuclideanDistance(view_point, intr);
                for (int k = i; k > j; --k) { // add all other vertices at this angle
-                  if (EuclideanDistance(view_point, *events[k]->p_orig) > max_dist)
+                  if (EuclideanDistance(view_point, *events[k]->p_orig) < dist + GEOM_PRECISION)
                      break;
                   result.push_back(*events[k]->p_orig);
                }
-               result.push_back(*top->from);
+               if(EuclideanDistance(result.back(), intr) > GEOM_PRECISION)
+                  result.push_back(intr);
             }
             else if (events[j]->p_orig == prev_top->to) {
                result.push_back(*prev_top->to);
-               Edge* pt = farthest.second > new_farthest.second ? farthest.first : new_farthest.first;
                Point intr;
-               intersection(Line(*pt->from, *pt->to), Line(view_point, *events[j]->p_orig), intr);
+               intersection(Line(*top->from, *top->to), Line(view_point, *events[j]->p_orig), intr);
                double max_dist = EuclideanDistance(view_point, intr);
                for (int k = j + 1; k <= i; ++k) { // add all collinear vertices at this angle
-                  if (EuclideanDistance(view_point, *events[k]->p_orig) > max_dist)
+                  if (EuclideanDistance(view_point, *events[k]->p_orig) > max_dist + GEOM_PRECISION)
                      break;
                   result.push_back(*events[k]->p_orig);
                }
-               result.push_back(intr);
-               if (i != j) {  // there were collinear vertices, add new farthest visible
-                  Point n_intr;
-                  intersection(Line(*top->from, *top->to), Line(view_point, *events[j]->p_orig), n_intr);
-                  if (EuclideanDistance(*top->from, n_intr) < GEOM_PRECISION)
-                     result.push_back(*top->from);
-                  else
-                     result.push_back(n_intr);
-               }                  
+               if (EuclideanDistance(result.back(), intr) > GEOM_PRECISION)
+                  result.push_back(intr);
             }
             prev_top = *state.begin();
          }
