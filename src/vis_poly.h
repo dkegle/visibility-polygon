@@ -2,12 +2,12 @@
 
 #include <memory>
 
-#include "Geometry.h"
+#include "geometry.h"
 
-class VisPoly1 {
+class VisPoly {
 public:
 
-   VisPoly1() {}
+   VisPoly() {}
 
    Polygon run(const Polygon& plg, const Point& view_point);
 
@@ -15,8 +15,8 @@ private:
    struct Edge;
 
    struct Event {
-      Event(const Point* _p_orig, const std::shared_ptr<Edge>& e1, 
-         const std::shared_ptr<Edge>& e2, double _angle) : 
+      Event(const Point* _p_orig, const std::shared_ptr<Edge>& e1,
+         const std::shared_ptr<Edge>& e2, double _angle) :
          p_orig(_p_orig), edge_1(e1), edge_2(e2), angle(_angle) {}
       const Point* p_orig;
       std::shared_ptr<Edge> edge_1;

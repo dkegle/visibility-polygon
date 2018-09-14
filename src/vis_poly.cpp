@@ -5,11 +5,11 @@
 #include <algorithm>
 #include <iostream>
 
-#include "VisPoly1.h"
+#include "vis_poly.h"
 
 // assuming view_point is in interior of plg,
 // and plg[0] == plg[plg.size() - 1]
-Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
+Polygon VisPoly::run(const Polygon& plg, const Point& view_point) {
    if (plg.size() < 3)
       return Polygon();
 
@@ -82,7 +82,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
       if (edge->p1_angle > edge->p2_angle) {
          std::swap(edge->from, edge->to); // make sure edges point ccw
          std::swap(prev_edge->p1_angle, prev_edge->p2_angle);
-      }        
+      }
 
       std::shared_ptr<Event> new_event = std::make_shared<Event>
          (&plg[i], prev_edge, edge, p1_angle);
@@ -90,7 +90,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
       events.push_back(new_event); // save new event
 
       addEdgeToInitialState(prev_edge);
-     
+
       prev_edge->next = edge.get();
       prev_edge = edge;
    }
@@ -192,7 +192,7 @@ Polygon VisPoly1::run(const Polygon& plg, const Point& view_point) {
 }
 
 // compares two edges in state
-bool VisPoly1::EdgeComparator::operator()(const Edge* p1, const Edge* p2) const {
+bool VisPoly::EdgeComparator::operator()(const Edge* p1, const Edge* p2) const {
    // if they're the same
    if ((p1->from == p2->from && p1->to == p2->to) ||
       (p1->from == p2->to && p1->to == p2->from))
@@ -209,7 +209,7 @@ bool VisPoly1::EdgeComparator::operator()(const Edge* p1, const Edge* p2) const 
       return leftTurn(*p1->from, *p1->to, *p2->to);
    if (p1->to == p2->to)
       return !leftTurn(*p1->from, *p1->to, *p2->from);
-   
+
    // otherwise check intersection
    LineSegment l1(*p1->from, *p1->to);
    LineSegment l2(*p2->from, *p2->to);
@@ -237,7 +237,7 @@ bool VisPoly1::EdgeComparator::operator()(const Edge* p1, const Edge* p2) const 
    return s2 < f2;
 }
 
-bool VisPoly1::EventComparator::operator()(std::shared_ptr<Event>& a, std::shared_ptr<Event>& b) const {
+bool VisPoly::EventComparator::operator()(std::shared_ptr<Event>& a, std::shared_ptr<Event>& b) const {
    if (a->angle == b->angle)
       return EuclideanDistance(*a->p_orig, viewpoint) < EuclideanDistance(*b->p_orig, viewpoint);
 
