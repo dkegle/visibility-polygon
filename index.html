@@ -1,0 +1,33 @@
+<html>
+<head>
+</head>
+<body>
+
+
+<script>
+  var importObject = {};
+
+  // load module, then make import object, then instantiate
+  WebAssembly.compileStreaming(fetch('vis_poly.wasm'))
+  .then(obj => {
+    var imps = WebAssembly.Module.imports(obj);
+    for (let imp of imps) {
+      if (typeof importObject[imp.module] === "undefined")
+          importObject[imp.module] = {};
+      switch (imp.kind) {
+      case "function": importObject[imp.module][imp.name] = () => {}; break;
+      case "table": importObject[imp.module][imp.name] = new WebAssembly.Table({ initial: 128, maximum: 256, element: "anyfunc" }); break;
+      case "memory": importObject[imp.module][imp.name] = new WebAssembly.Memory({ initial: 256 }); break;
+      case "global": importObject[imp.module][imp.name] = 0; break;
+      }
+    }
+
+    WebAssembly.instantiate(obj, importObject)
+    .then(wa => {
+      console.log(wa.exports._testing_emsc());
+    });
+
+  });
+</script>
+</body>
+</html>

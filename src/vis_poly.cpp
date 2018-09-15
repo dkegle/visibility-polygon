@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <cmath> // abs
+
 #include "vis_poly.h"
 
 // assuming view_point is in interior of plg,

@@ -1,6 +1,19 @@
 #include "geometry.h"
 
 #include <algorithm>
+#include <math.h>       /* sqrt */
+
+#include "emscripten.h"
+
+#include <stdio.h>
+
+extern "C" {
+
+EMSCRIPTEN_KEEPALIVE
+int testing_emsc(){
+  return 15;
+}
+}
 
 void Point::normalize() {
    double length = sqrt(x*x + y*y);
