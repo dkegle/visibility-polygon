@@ -1,3 +1,19 @@
+import Canvas from './canvas.js';
+
+
+var canvas = new Canvas('canvas');
+
+let viewpoint = new Int16Array([50, 100]);
+let polygon = new Int16Array([30, 30, 30, 250, 250, 250, 250, 30]);
+let view_polygon = new Int16Array([50, 50, 75, 75, 120, 50]);
+
+canvas.setViewpoint(viewpoint);
+canvas.setPolygon(polygon);
+canvas.setViewpolygon(view_polygon);
+
+canvas.draw();
+
+
 Module.onRuntimeInitialized = async _ => {
   var num_bytes = 16;
   var num_elements = 3;
