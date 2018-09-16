@@ -1,0 +1,20 @@
+{
+  "name": "visibility-polygon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-cpp": "emcc -Os -std=c++14 src/cpp/*.cpp -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"cwrap\"]' -o build/vis_poly.js",
+    "watch": "webpack --mode development --watch -o 'build/index.js'",
+    "emsc": "emrun --no_browser --port 8080 ."
+  },
+  "author": "dkegle",
+  "license": "BSD",
+  "homepage": "",
+  "devDependencies": {
+    "webpack": "^4.16.2",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+  }
+}
