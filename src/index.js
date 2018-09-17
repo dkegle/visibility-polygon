@@ -55,5 +55,10 @@ Module.onRuntimeInitialized = async _ => {
   canvas.setPolygon(polygon);
   Module._setPolygon(ptr_polygon, num_elements);
 
+  Module._runVisPoly(viewpoint[0],viewpoint[1]);
+  let res_ptr = Module._getVisPoly();
+  let res_sz = Module._getVisPolySize();
+  let res = new Float64Array(Module.HEAPF64.buffer, res_ptr, res_sz);
+  canvas.setViewpolygon(res);
   canvas.draw();
 };

@@ -16,6 +16,13 @@ export default class Canvas {
       console.log("inside!");
       this.viewpoint[0]=x;
       this.viewpoint[1]=y;
+
+      this.wasm_module._freeVisPoly();
+      this.wasm_module._runVisPoly(x,y);
+      let res_ptr = this.wasm_module._getVisPoly();
+      let res_sz = this.wasm_module._getVisPolySize();
+      let res = new Float64Array(this.wasm_module.HEAPF64.buffer, res_ptr, res_sz);
+      this.setViewpolygon(res);
       this.draw();
     }
     else

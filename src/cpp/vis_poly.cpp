@@ -190,6 +190,7 @@ Polygon VisPoly::run(const Polygon& plg, const Point& view_point) {
    }
    if(EuclideanDistance(result.back(), result.front()) > GEOM_PRECISION)
       result.push_back(result.front());   // make sure result[0] == result[result.size()-1]
+   std::cout << "Done" << std::endl;
    return result;
 }
 
