@@ -71,6 +71,14 @@ export default class Canvas {
     this.view_polygon = vplg;
   }
 
+  getWidth(){
+    return this.canvas.width;
+  }
+
+  getHeight(){
+    return this.canvas.height;
+  }
+  
   draw(){
     if (this.canvas.getContext) {
       let ctx = this.canvas.getContext('2d');

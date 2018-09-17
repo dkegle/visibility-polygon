@@ -1,17 +1,17 @@
 import Canvas from './canvas.js';
 
 
-let initial_x = 50.0;
+let initial_x = 120.0;
 let initial_y = 100.0;
 
 var canvas = new Canvas('canvas', Module, initial_x, initial_y);
 
 
 Module.onRuntimeInitialized = async _ => {
-  let slo = await fetch('build/slo.geojson');
-  slo = await slo.json();
-  let coordinates = slo.features[0].geometry.coordinates[0];
-  let num_coords = slo.features[0].geometry.coordinates[0].length;
+  let initial_plg = await fetch('build/uk2.geojson');
+  initial_plg = await initial_plg.json();
+  let coordinates = initial_plg.features[0].geometry.coordinates[0];
+  let num_coords = coordinates.length;
 
   var num_bits = 64;
   var num_elements = num_coords*2;
@@ -39,10 +39,10 @@ Module.onRuntimeInitialized = async _ => {
   const diff_y=max_y-min_y;
   const aspect_ratio=diff_x/diff_y;
   for(let i=0; i<num_coords; i++){
-    polygon[2*i] = (polygon[2*i]-min_x)/diff_x*400.0;
-    polygon[2*i+1] = 400-(polygon[2*i+1]-min_y)/diff_y*400.0;
+    polygon[2*i] = (polygon[2*i]-min_x)/diff_x*(canvas.getWidth());
+    polygon[2*i+1] = canvas.getHeight()-(polygon[2*i+1]-min_y)/diff_y*(canvas.getHeight());
     if(aspect_ratio < 1)
-      polygon[2*i] /= aspect_ratio;
+      polygon[2*i] *= aspect_ratio;
     else
       polygon[2*i+1] /= aspect_ratio;
   }

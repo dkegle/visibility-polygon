@@ -19,6 +19,7 @@ int g_vis_poly_size = 0;
 EMSCRIPTEN_KEEPALIVE
 void setPolygon(double* plg, int n){
   g_polygon_size=n;
+  g_polygon=plg;
   for(int i=0; i<n; ++i){
     g_polygon[i]=plg[i];
     if(i%2==1)
