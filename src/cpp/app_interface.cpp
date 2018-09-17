@@ -8,12 +8,14 @@
 
 extern "C" {
 
+// data
 Polygon g_plg;
 double* g_polygon = nullptr;
 int g_polygon_size = 0;
 double* g_vis_poly = nullptr;
 int g_vis_poly_size = 0;
 
+// api
 EMSCRIPTEN_KEEPALIVE
 void setPolygon(double* plg, int n){
   g_polygon_size=n;
@@ -65,6 +67,7 @@ int isInsidePolygon(double x, double y){
   return num_intrs%2;
 }
 
+// calculates visibility polygon from (x,y) inside current g_plg
 EMSCRIPTEN_KEEPALIVE
 void runVisPoly(double x, double y){
   Point vp(x,y); // viewpoint

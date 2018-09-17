@@ -1,15 +1,10 @@
 import Canvas from './canvas.js';
 
 
-var canvas = new Canvas('canvas', Module);
+let initial_x = 50.0;
+let initial_y = 100.0;
 
-let viewpoint = new Float64Array([50.0, 100.0]);
-let polygon = new Float64Array([]);
-let view_polygon = new Float64Array([50.0, 50.0, 75.0, 75.0, 120.0, 50.0]);
-
-canvas.setViewpoint(viewpoint);
-canvas.setPolygon(polygon);
-canvas.setViewpolygon(view_polygon);
+var canvas = new Canvas('canvas', Module, initial_x, initial_y);
 
 
 Module.onRuntimeInitialized = async _ => {
@@ -55,7 +50,7 @@ Module.onRuntimeInitialized = async _ => {
   canvas.setPolygon(polygon);
   Module._setPolygon(ptr_polygon, num_elements);
 
-  Module._runVisPoly(viewpoint[0],viewpoint[1]);
+  Module._runVisPoly(initial_x, initial_y);
   let res_ptr = Module._getVisPoly();
   let res_sz = Module._getVisPolySize();
   let res = new Float64Array(Module.HEAPF64.buffer, res_ptr, res_sz);
