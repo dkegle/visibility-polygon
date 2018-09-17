@@ -3,45 +3,6 @@
 #include <algorithm>
 #include <math.h>       /* sqrt */
 
-#include "emscripten.h"
-
-#include <stdio.h>
-
-#include <stdlib.h>
-
-
-
-extern "C" {
-
-int16_t* g = nullptr;
-int gs = 0;
-
-EMSCRIPTEN_KEEPALIVE
-void doubling(int16_t* inp, int n){
-  gs = 2*n;
-  g = (int16_t*)malloc(gs*sizeof(int16_t));
-  for(int i=0; i<n; ++i){
-    g[2*i] = inp[i];
-    g[2*i+1] = inp[i];
-  }
-}
-
-EMSCRIPTEN_KEEPALIVE
-void free_result(){
-  free(g);
-}
-
-EMSCRIPTEN_KEEPALIVE
-int16_t* getG(){
-  return g;
-}
-
-EMSCRIPTEN_KEEPALIVE
-int16_t getGSize(){
-  return gs;
-}
-
-}
 
 void Point::normalize() {
    double length = sqrt(x*x + y*y);

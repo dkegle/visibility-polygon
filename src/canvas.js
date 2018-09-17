@@ -1,18 +1,25 @@
 export default class Canvas {
-  constructor(canvas_id){
+  constructor(canvas_id, wasm_module){
     this.canvas = document.getElementById(canvas_id);
     this.canvas.addEventListener('click', this.clickEvent.bind(this));
-    this.viewpoint = new Int16Array([]);
-    this.polygon = new Int16Array([]);
-    this.view_polygon = new Int16Array([]);
+    this.viewpoint = new Float64Array([]);
+    this.polygon = new Float64Array([]);
+    this.view_polygon = new Float64Array([]);
+    this.wasm_module = wasm_module;
   }
 
   clickEvent(event){
     let x = event.pageX - this.canvas.offsetLeft;
     let y = event.pageY - this.canvas.offsetTop;
     console.log("clicked " + x + " " + y);
-    let num_intersections = 0;
-
+    if(this.wasm_module._isInsidePolygon(x,y) === 1){
+      console.log("inside!");
+      this.viewpoint[0]=x;
+      this.viewpoint[1]=y;
+      this.draw();
+    }
+    else
+      console.log("outside");
   }
 
   setViewpoint(vp){
@@ -30,6 +37,7 @@ export default class Canvas {
   draw(){
     if (this.canvas.getContext) {
       let ctx = this.canvas.getContext('2d');
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
       let draw_polygon = (coords, color) => {
         ctx.fillStyle = color;
