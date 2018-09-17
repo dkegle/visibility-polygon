@@ -1,54 +1,19 @@
 import Canvas from './canvas.js';
-
+import DataManager from './data_manager.js';
 
 let initial_x = 120.0;
 let initial_y = 100.0;
+let initial_country = 'australia';
 
-var canvas = new Canvas('canvas', Module, initial_x, initial_y);
+let canvas = new Canvas('canvas', Module, initial_x, initial_y);
+let data_manager = new DataManager(Module, canvas.getWidth(), canvas.getHeight());
 
 
 Module.onRuntimeInitialized = async _ => {
-  let initial_plg = await fetch('build/uk2.geojson');
-  initial_plg = await initial_plg.json();
-  let coordinates = initial_plg.features[0].geometry.coordinates[0];
-  let num_coords = coordinates.length;
+  let cd = await data_manager.getCountryData(initial_country);
 
-  var num_bits = 64;
-  var num_elements = num_coords*2;
-  var ptr_polygon = Module._malloc(num_bits*num_elements);
-  var polygon = new Float64Array(Module.HEAPF64.buffer, ptr_polygon, num_elements);
-
-  let max_x=Number.NEGATIVE_INFINITY;
-  let max_y=max_x;
-  let min_x=Number.POSITIVE_INFINITY;
-  let min_y=min_x;
-  for(let i=0; i<num_coords; i++){
-    if(coordinates[i][0] > max_x)
-      max_x = coordinates[i][0];
-    if(coordinates[i][0] < min_x)
-      min_x = coordinates[i][0];
-    if(coordinates[i][1] > max_y)
-      max_y = coordinates[i][1];
-    if(coordinates[i][1] < min_y)
-      min_y = coordinates[i][1];
-
-    polygon[2*i] = coordinates[i][0];
-    polygon[2*i+1] = coordinates[i][1];
-  }
-  const diff_x=max_x-min_x;
-  const diff_y=max_y-min_y;
-  const aspect_ratio=diff_x/diff_y;
-  for(let i=0; i<num_coords; i++){
-    polygon[2*i] = (polygon[2*i]-min_x)/diff_x*(canvas.getWidth());
-    polygon[2*i+1] = canvas.getHeight()-(polygon[2*i+1]-min_y)/diff_y*(canvas.getHeight());
-    if(aspect_ratio < 1)
-      polygon[2*i] *= aspect_ratio;
-    else
-      polygon[2*i+1] /= aspect_ratio;
-  }
-
-  canvas.setPolygon(polygon);
-  Module._setPolygon(ptr_polygon, num_elements);
+  canvas.setPolygon(cd.coordinates);
+  Module._setPolygon(cd.buffer_ptr, cd.num_elements);
 
   Module._runVisPoly(initial_x, initial_y);
   let res_ptr = Module._getVisPoly();
