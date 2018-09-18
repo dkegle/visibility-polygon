@@ -8,15 +8,18 @@ export default class Canvas {
     this.polygon = new Float64Array([]);
     this.view_polygon = new Float64Array([]);
     this.wasm_module = wasm_module;
+    this.updateViewpoint = null;
+    this.current_country = '';
   }
 
   clickEvent(event){
-    let x = event.pageX - this.canvas.offsetLeft;
-    let y = event.pageY - this.canvas.offsetTop;
-    console.log("clicked " + x + " " + y);
-    if(this.wasm_module._isInsidePolygon(x,y) === 1){
+    let new_x = event.pageX - this.canvas.offsetLeft;
+    let new_y = event.pageY - this.canvas.offsetTop;
+    console.log("clicked " + new_x + " " + new_y);
+    if(this.wasm_module._isInsidePolygon(new_x, new_y) === 1){
       console.log("inside!");
-      this.redrawFromViewpoint(x,y);
+      this.updateViewpoint(this.current_country, new_x, new_y);
+      this.redrawFromViewpoint(new_x, new_y);
     }
     else
       console.log("outside");
@@ -40,6 +43,7 @@ export default class Canvas {
 
     if(this.wasm_module._isInsidePolygon(new_x, new_y) === 1){
       console.log("still inside");
+      this.updateViewpoint(this.current_country, new_x, new_y);
       this.redrawFromViewpoint(new_x, new_y);
     }
     else{
@@ -59,6 +63,10 @@ export default class Canvas {
     let res = new Float64Array(this.wasm_module.HEAPF64.buffer, res_ptr, res_sz);
     this.setViewpolygon(res);
     this.draw();
+  }
+
+  setCountry(country){
+    this.current_country = country;
   }
 
   setViewpoint(x, y){

@@ -8,6 +8,11 @@ export default class DataManager {
     this.initial_y = initial_y;
   }
 
+  setNewViewpoint(country, x, y){
+    this.countries[country].viewpoint_x = x;
+    this.countries[country].viewpoint_y = y;
+  }
+
   async getCountryData(country){
     if(country in this.countries)
       return this.countries[country];
