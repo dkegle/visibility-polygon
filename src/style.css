@@ -1,27 +1,37 @@
+@font-face {
+  font-family: 'poiret';
+  src: local('poiret'),
+       url('./poiret-one-v5-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+       url('./poiret-one-v5-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
 
 header {
-  background-color: #ccc2a9;
-  text-align: center;
+  background-color: #ddddbb;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 header > h1 {
-  font-family: serif;
-  font: Helvetica;
-
+  font-family: 'poiret';
+  font-size: 50px;
+  font-weight: normal;
 }
 
 footer {
-  background-color: #ccc2a9;
+  background-color: #ddddbb;
   text-align: center;
 }
 
 footer > h3 {
-  font-family: sans-serif;
-  font: Arial;
-  font-weight: normal;
+  padding: 5px;
+  font-family: 'poiret';
+  font-size: 18px;
 }
 
 div > h3 {
+  text-align: center;
   font-family: sans-serif;
   font: Helvetica;
   font-size: 20px;
@@ -30,6 +40,9 @@ div > h3 {
 .mid-container{
   display: flex;
   justify-content: center;
+  font-family: serif;
+  font: Arial;
+  font-size: 18px;
 }
 
 .mid-container > div {
@@ -37,7 +50,7 @@ div > h3 {
 }
 
 #canvas {
-  background-color: lightblue;
+  background-color: #f9f2ec;
   border: 1px solid black;
 }
 
@@ -57,13 +70,16 @@ div > h3 {
   font-family: sans-serif;
   font: Helvetica;
   font-size: 18px;
-  background-color: lightgrey;
+  background-color: #f0f0f5;
+  text-align: center;
+  border-radius: 30px;
+  border: 2px solid #3d3d5c;
 }
 
 #country-form > input:hover+label{
-  background-color: lightgreen;
+  background-color: #c2c2d6;
 }
 
 #country-form > input:checked+label{
-  background-color: pink;
+  background-color: #fff2cc;
 }

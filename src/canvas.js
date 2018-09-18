@@ -98,14 +98,24 @@ export default class Canvas {
       }
 
       if(this.polygon.length >= 6)
-        draw_polygon(this.polygon, 'grey');
+        draw_polygon(this.polygon, '#e6e6e6'); // polygon
 
       if(this.view_polygon.length >= 6)
-        draw_polygon(this.view_polygon, 'orange');
+        draw_polygon(this.view_polygon, '#cc6666'); // vis poly
 
-      ctx.fillStyle='#660033';
+      if(this.polygon.length >= 6){
+        ctx.strokeStyle = "#404040";  // border
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(this.polygon[0], this.polygon[1]);
+        for(let i=2; i<this.polygon.length; i+=2)
+          ctx.lineTo(this.polygon[i], this.polygon[i+1]);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle='#663300';
       ctx.beginPath();
-      ctx.arc(this.x, this.y, 7, 0, Math.PI*2, 0);
+      ctx.arc(this.x, this.y, 5, 0, Math.PI*2, 0);
       ctx.fill();
     }
   }
