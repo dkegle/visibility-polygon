@@ -1,9 +1,11 @@
 export default class DataManager {
-  constructor(wasm_module, canvas_width, canvas_height){
+  constructor(wasm_module, canvas_width, canvas_height, initial_x, initial_y){
     this.countries = {};
     this.wasm_module = wasm_module;
     this.canvas_width = canvas_width;
     this.canvas_height = canvas_height;
+    this.initial_x = initial_x;
+    this.initial_y = initial_y;
   }
 
   async getCountryData(country){
@@ -12,8 +14,8 @@ export default class DataManager {
 
     let raw = await fetch('build/' + country + ".geojson");
     raw = await raw.json();
-    let coordinates = raw.features[0].geometry.coordinates[0];
-    let num_coords = coordinates.length;
+    const coordinates = raw.features[0].geometry.coordinates[0];
+    const num_coords = coordinates.length;
 
     let num_bits = 64;
     let num_elements = num_coords*2;
@@ -43,18 +45,33 @@ export default class DataManager {
     const diff_x=max_x-min_x;
     const diff_y=max_y-min_y;
     const aspect_ratio=diff_x/diff_y;
+    let new_max_x=Number.NEGATIVE_INFINITY;
+    let new_max_y=Number.NEGATIVE_INFINITY;
     for(let i=0; i<num_coords; i++){
-      polygon[2*i] = (polygon[2*i]-min_x)/diff_x*(this.canvas_width);
-      polygon[2*i+1] = this.canvas_height-(polygon[2*i+1]-min_y)/diff_y*(this.canvas_height);
+      polygon[2*i] = (polygon[2*i]-min_x)/diff_x*this.canvas_width*0.95;
+      polygon[2*i+1] = (this.canvas_height-(polygon[2*i+1]-min_y)/diff_y*this.canvas_height)*0.95;
       if(aspect_ratio < 1)
         polygon[2*i] *= aspect_ratio;
       else
         polygon[2*i+1] /= aspect_ratio;
+      if(polygon[2*i] > new_max_x)
+        new_max_x = polygon[2*i];
+      if(polygon[2*i+1] > new_max_y)
+        new_max_y = polygon[2*i+1];
+    }
+
+    const translate_x = (this.canvas_width - new_max_x)/2.0;
+    const translate_y = (this.canvas_height - new_max_y)/2.0;
+    for(let i=0; i<num_coords; i++){
+      polygon[2*i] += translate_x;
+      polygon[2*i+1] += translate_y;
     }
 
     this.countries[country] = {coordinates: polygon,
       buffer_ptr: ptr_polygon,
-      num_elements: num_elements
+      num_elements: num_elements,
+      viewpoint_x: this.initial_x,
+      viewpoint_y: this.initial_y
     };
 
     return this.countries[country];

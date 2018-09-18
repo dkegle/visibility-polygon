@@ -5,10 +5,11 @@ import StateManager from './state_manager.js';
 require('./style.css');
 
 // initial country and initial viewpoint
-let initial_state = { country_id: 'slovenia', x: 185.0, y: 135.0 };
+let initial_state = { country_id: 'slovenia', x: 300.0, y: 250.0 };
 
 let canvas = new Canvas('canvas', Module);
-let data_manager = new DataManager(Module, canvas.getWidth(), canvas.getHeight());
+let data_manager = new DataManager(Module, canvas.getWidth(), canvas.getHeight(),
+  initial_state.x, initial_state.y);
 let state_manager = new StateManager(Module, canvas, data_manager, initial_state);
 
 
