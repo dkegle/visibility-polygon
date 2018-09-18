@@ -1,0 +1,69 @@
+
+header {
+  background-color: #ccc2a9;
+  text-align: center;
+}
+
+header > h1 {
+  font-family: serif;
+  font: Helvetica;
+
+}
+
+footer {
+  background-color: #ccc2a9;
+  text-align: center;
+}
+
+footer > h3 {
+  font-family: sans-serif;
+  font: Arial;
+  font-weight: normal;
+}
+
+div > h3 {
+  font-family: sans-serif;
+  font: Helvetica;
+  font-size: 20px;
+}
+
+.central-container{
+  display: flex;
+  justify-content: center;
+}
+
+.central-container > div {
+  margin: 20px;
+}
+
+#canvas {
+  background-color: lightblue;
+  border: 1px solid black;
+}
+
+#country-form {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+}
+
+#country-form > input {
+  display: none;
+}
+
+#country-form > label {
+  padding: 12px;
+  margin: 6px;
+  font-family: sans-serif;
+  font: Helvetica;
+  font-size: 18px;
+  background-color: lightgrey;
+}
+
+#country-form > input:hover+label{
+  background-color: lightgreen;
+}
+
+#country-form > input:checked+label{
+  background-color: pink;
+}

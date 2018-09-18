@@ -1,17 +1,36 @@
 <html>
 <head>
   <meta charset="utf-8"/>
+  <link rel="stylesheet" type="text/css" href="build/style.css">
+  <title>Visibility polygon demo</title>
 </head>
 <body>
 
-<div style="width: 400; margin: auto">
-  <canvas id="canvas" width="400" height="400"
-    style="border: 1px solid black" tabindex="1">
-  </canvas>
+<header>
+  <h1>Visibility polygon</h1>
+</header>
+
+<div class="central-container">
+  <div>
+    <canvas id="canvas" tabindex="1" width="500" height="500">
+    </canvas>
+  </div>
+  <div>
+    <h3>Select country</h3>
+    <form id="country-form" action="">
+      <input type="radio" name="country" id="c1"> <label for="c1">Slovenia</label>
+      <input type="radio" name="country" id="c2"> <label for="c2">Australia</label>
+      <input type="radio" name="country" id="c3"> <label for="c3">Brazil</label>
+      <input type="radio" name="country" id="c4"> <label for="c4">United Kingdom</label>
+    </form>
+  </div>
 </div>
+
+<footer>
+  <h3> by dkegle, CC BY license </h3>
+</footer>
 
 <script src="build/vis_poly.js"></script>
 <script src="build/index.js"></script>
-
 </body>
 </html>
