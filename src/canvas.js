@@ -1,9 +1,10 @@
 export default class Canvas {
-  constructor(canvas_id, wasm_module, initial_x, initial_y){
+  constructor(canvas_id, wasm_module){
     this.canvas = document.getElementById(canvas_id);
     this.canvas.addEventListener('click', this.clickEvent.bind(this));
     this.canvas.addEventListener('keydown', this.keyDownEvent.bind(this));
-    this.viewpoint = new Float64Array([initial_x, initial_y]);
+    this.x = 1;
+    this.y = 1;
     this.polygon = new Float64Array([]);
     this.view_polygon = new Float64Array([]);
     this.wasm_module = wasm_module;
@@ -34,8 +35,8 @@ export default class Canvas {
     else if(event.code === "ArrowRight")
       dx += velocity;
 
-    let new_x = this.viewpoint[0] + dx;
-    let new_y = this.viewpoint[1] + dy;
+    let new_x = this.x + dx;
+    let new_y = this.y + dy;
 
     if(this.wasm_module._isInsidePolygon(new_x, new_y) === 1){
       console.log("still inside");
@@ -46,9 +47,10 @@ export default class Canvas {
     }
   }
 
+  // recalculates visibility polygon and then redraws (triggered on click or on keydown)
   redrawFromViewpoint(x,y){
-    this.viewpoint[0]=x;
-    this.viewpoint[1]=y;
+    this.x=x;
+    this.y=y;
 
     this.wasm_module._freeVisPoly();
     this.wasm_module._runVisPoly(x,y);
@@ -59,8 +61,9 @@ export default class Canvas {
     this.draw();
   }
 
-  setViewpoint(vp){
-    this.viewpoint = vp;
+  setViewpoint(x, y){
+    this.x = x;
+    this.y = y;
   }
 
   setPolygon(plg){
@@ -78,7 +81,8 @@ export default class Canvas {
   getHeight(){
     return this.canvas.height;
   }
-  
+
+  // draws canvas according to current data (doesn't recalculate)
   draw(){
     if (this.canvas.getContext) {
       let ctx = this.canvas.getContext('2d');
@@ -99,15 +103,10 @@ export default class Canvas {
       if(this.view_polygon.length >= 6)
         draw_polygon(this.view_polygon, 'orange');
 
-      if(this.viewpoint.length === 2){
-        let x=this.viewpoint[0];
-        let y=this.viewpoint[1];
-
-        ctx.fillStyle='pink';
-        ctx.beginPath();
-        ctx.arc(x, y, 7, 0, Math.PI*2, 0);
-        ctx.fill();
-      }
+      ctx.fillStyle='#660033';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, 7, 0, Math.PI*2, 0);
+      ctx.fill();
     }
   }
 }

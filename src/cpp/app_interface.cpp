@@ -10,20 +10,15 @@ extern "C" {
 
 // data
 Polygon g_plg;
-double* g_polygon = nullptr;
-int g_polygon_size = 0;
 double* g_vis_poly = nullptr;
 int g_vis_poly_size = 0;
 
 // api
 EMSCRIPTEN_KEEPALIVE
 void setPolygon(double* plg, int n){
-  g_polygon_size=n;
-  g_polygon=plg;
-  for(int i=0; i<n; ++i){
-    g_polygon[i]=plg[i];
-    if(i%2==1)
-      g_plg.push_back(Point(g_polygon[i-1], g_polygon[i]));
+  g_plg.clear();
+  for(int i=1; i<n; i+=2){
+    g_plg.push_back(Point(plg[i-1], plg[i]));
   }
   if(g_plg.size() > 0 && (g_plg.front().x != g_plg.back().x || g_plg.front().y != g_plg.back().y))
     g_plg.push_back(g_plg.front());
@@ -53,10 +48,8 @@ int isInsidePolygon(double x, double y){
 
   Point intr;
   int num_intrs = 0;
-  for(int i=2; i<g_polygon_size; i+=2){
-    Point p1(g_polygon[i-2], g_polygon[i-1]);
-    Point p2(g_polygon[i], g_polygon[i+1]);
-    LineSegment cur_seg(p1, p2);
+  for(int i=1; i<g_plg.size(); ++i){
+    LineSegment cur_seg(g_plg[i-1], g_plg[i]);
 
     double d=distance(cur_seg, p);
     if(d < GEOM_PRECISION)
@@ -71,10 +64,10 @@ int isInsidePolygon(double x, double y){
 // calculates visibility polygon from (x,y) inside current g_plg
 EMSCRIPTEN_KEEPALIVE
 void runVisPoly(double x, double y){
+  freeVisPoly();
   Point vp(x,y); // viewpoint
   VisPoly c_vp;
   Polygon result = c_vp.run(g_plg, vp);
-  freeVisPoly();
   g_vis_poly_size = 2*result.size();
   g_vis_poly = (double*)malloc(g_vis_poly_size*sizeof(double));
   for(int i=0; i<result.size(); ++i){

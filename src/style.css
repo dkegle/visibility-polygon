@@ -27,12 +27,12 @@ div > h3 {
   font-size: 20px;
 }
 
-.central-container{
+.mid-container{
   display: flex;
   justify-content: center;
 }
 
-.central-container > div {
+.mid-container > div {
   margin: 20px;
 }
 

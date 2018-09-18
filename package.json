@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-cpp": "emcc -Os -std=c++14 src/cpp/*.cpp -s EXTRA_EXPORTED_RUNTIME_METHODS='[\"cwrap\"]' -s ASSERTIONS=1 -o build/vis_poly.js",
+    "build-cpp": "emcc -Os -std=c++14 src/cpp/*.cpp -s EXPORTED_FUNCTIONS='[\"_malloc\"]' -s ASSERTIONS=1 -o build/vis_poly.js",
     "watch": "webpack --watch",
     "emsc": "emrun --no_browser --port 8080 ."
   },

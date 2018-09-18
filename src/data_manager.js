@@ -15,10 +15,10 @@ export default class DataManager {
     let coordinates = raw.features[0].geometry.coordinates[0];
     let num_coords = coordinates.length;
 
-    var num_bits = 64;
-    var num_elements = num_coords*2;
-    var ptr_polygon = this.wasm_module._malloc(num_bits*num_elements);
-    var polygon = new Float64Array(this.wasm_module.HEAPF64.buffer, ptr_polygon, num_elements);
+    let num_bits = 64;
+    let num_elements = num_coords*2;
+    let ptr_polygon = this.wasm_module._malloc(num_bits*num_elements);
+    let polygon = new Float64Array(this.wasm_module.HEAPF64.buffer, ptr_polygon, num_elements);
 
     // find bbox, fill coordinates in buffer
     let max_x=Number.NEGATIVE_INFINITY;
@@ -56,7 +56,7 @@ export default class DataManager {
       buffer_ptr: ptr_polygon,
       num_elements: num_elements
     };
-    
+
     return this.countries[country];
   }
 
