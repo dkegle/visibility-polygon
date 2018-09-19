@@ -17,7 +17,7 @@ export default class DataManager {
     if(country in this.countries)
       return this.countries[country];
 
-    let raw = await fetch('build/' + country + ".geojson");
+    let raw = await fetch('data/' + country + ".geojson");
     raw = await raw.json();
     const coordinates = raw.features[0].geometry.coordinates[0];
     const num_coords = coordinates.length;
