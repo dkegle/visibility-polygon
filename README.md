@@ -11,7 +11,7 @@ Use sweep line approach. We sweep through points in P ordered by angle. Current 
 Asymptotic time complexity is O(nlog n), since we are sorting events.
 
 #### Running Webassembly demo
-
+Live demo [here](https://dkegle.github.io/visibility-polygon/). To run it locally, follow these steps.
 1) You need Emscripten SDK to compile C++ to Webassembly. Install it from Github.
 ```
 git clone https://github.com/juj/emsdk.git
