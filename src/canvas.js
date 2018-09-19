@@ -10,6 +10,7 @@ export default class Canvas {
     this.wasm_module = wasm_module;
     this.updateViewpoint = null;
     this.current_country = '';
+    this.vis_poly_color = '';
   }
 
   clickEvent(event){
@@ -65,8 +66,9 @@ export default class Canvas {
     this.draw();
   }
 
-  setCountry(country){
+  setCountry(country, color){
     this.current_country = country;
+    this.vis_poly_color = color;
   }
 
   setViewpoint(x, y){
@@ -109,10 +111,10 @@ export default class Canvas {
         draw_polygon(this.polygon, '#e6e6e6'); // polygon
 
       if(this.view_polygon.length >= 6)
-        draw_polygon(this.view_polygon, '#cc6666'); // vis poly
+        draw_polygon(this.view_polygon, this.vis_poly_color); // vis poly
 
       if(this.polygon.length >= 6){
-        ctx.strokeStyle = "#404040";  // border
+        ctx.strokeStyle = "#262626";  // border
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(this.polygon[0], this.polygon[1]);
