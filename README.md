@@ -23,7 +23,7 @@ Then activate and source.
 ./emsdk activate latest
 source ./emsdk_env.sh
 ```
-2) Use the same terminal to clone visibility-polygon and build static files.
+2) Use the same terminal to clone visibility-polygon repo and build static files.
 ```
 cd ..
 git clone https://github.com/dkegle/visibility-polygon.git
