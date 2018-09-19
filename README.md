@@ -10,6 +10,36 @@ Use sweep line approach. We sweep through points in P ordered by angle. Current 
 
 Asymptotic time complexity is O(nlog n), since we are sorting events.
 
+#### Running Webassembly demo
+
+1) You need Emscripten SDK to compile C++ to Webassembly. Install it from Github.
+```
+git clone https://github.com/juj/emsdk.git
+cd emsdk
+./emsdk install latest
+```
+Then activate and source.
+```
+./emsdk activate latest
+source ./emsdk_env.sh
+```
+2) Use the same terminal to clone visibility-polygon and build static files.
+```
+cd ..
+git clone https://github.com/dkegle/visibility-polygon.git
+cd visibility-polygon
+npm install
+npm run build-cpp
+npm run build-js
+```
+To correctly serve .wasm files, use server provided by emscripten.
+```
+npm run emsc-server
+```
+The app should now run on http://localhost:8080/.
+
+
+#### Misc
 
 ![](img/examples.png)
 
