@@ -1,10 +1,13 @@
 export default class Canvas {
   constructor(canvas_id, wasm_module){
     this.canvas = document.getElementById(canvas_id);
-    this.canvas.addEventListener('click', this.clickEvent.bind(this));
-    this.canvas.addEventListener('keydown', this.keyDownEvent.bind(this));
+    this.canvas.addEventListener('keydown', this.keyDown.bind(this));
+    this.canvas.addEventListener('mousedown', this.mouseDown.bind(this));
+    this.canvas.addEventListener('mousemove', this.mouseMove.bind(this));
+    this.canvas.addEventListener('mouseup', this.mouseUp.bind(this));
     this.x = 1;
     this.y = 1;
+    this.mouse_drag = false;
     this.polygon = new Float64Array([]);
     this.view_polygon = new Float64Array([]);
     this.wasm_module = wasm_module;
@@ -13,12 +16,13 @@ export default class Canvas {
     this.vis_poly_color = '';
   }
 
-  clickEvent(event){
+  mouseDown(event){
     let new_x = event.pageX - this.canvas.offsetLeft;
     let new_y = event.pageY - this.canvas.offsetTop;
-    console.log("clicked " + new_x + " " + new_y);
+    console.log("mousedown at " + new_x + " " + new_y);
     if(this.wasm_module._isInsidePolygon(new_x, new_y) === 1){
       console.log("inside!");
+      this.mouse_drag = true;
       this.updateViewpoint(this.current_country, new_x, new_y);
       this.redrawFromViewpoint(new_x, new_y);
     }
@@ -26,7 +30,26 @@ export default class Canvas {
       console.log("outside");
   }
 
-  keyDownEvent(event){
+  mouseMove(event) {
+    if(this.mouse_drag) {
+      let new_x = event.pageX - this.canvas.offsetLeft;
+      let new_y = event.pageY - this.canvas.offsetTop;
+
+      if(this.wasm_module._isInsidePolygon(new_x, new_y) === 1){
+        console.log("inside!");
+        this.updateViewpoint(this.current_country, new_x, new_y);
+        this.redrawFromViewpoint(new_x, new_y);
+      }
+      else
+        console.log("outside");
+    }
+  }
+
+  mouseUp(event){
+    this.mouse_drag = false;
+  }
+
+  keyDown(event){
     let dx=0;
     let dy=0;
     let velocity=3;
@@ -52,7 +75,7 @@ export default class Canvas {
     }
   }
 
-  // recalculates visibility polygon and then redraws (triggered on click or on keydown)
+  // recalculates visibility polygon and then redraws (triggered on mousedown, keydown or drag)
   redrawFromViewpoint(x,y){
     this.x=x;
     this.y=y;
