@@ -2,7 +2,7 @@ import Canvas from './canvas.js';
 import DataManager from './data_manager.js';
 import StateManager from './state_manager.js';
 
-require('./css/style.css');
+require('./css/style.scss');
 
 // initial country and initial viewpoint
 let initial_country = 'slovenia';

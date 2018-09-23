@@ -5,29 +5,30 @@
        url('../fonts/poiret-one-v5-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
+$primary-bg-color: #ffd699;
 
 header {
-  background-color: #ffd699;
+  background-color: $primary-bg-color;
   width: 100%;
   display: flex;
   justify-content: center;
-}
 
-header > h1 {
-  font-family: 'poiret';
-  font-size: 50px;
-  font-weight: normal;
+  h1 {
+    font-family: 'poiret';
+    font-size: 50px;
+    font-weight: normal;
+  }
 }
 
 footer {
-  background-color: #ffd699;
+  background-color: $primary-bg-color;
   text-align: center;
-}
 
-footer > h3 {
-  padding: 5px;
-  font-family: 'poiret';
-  font-size: 18px;
+  h3 {
+    padding: 5px;
+    font-family: 'poiret';
+    font-size: 18px;
+  }
 }
 
 div > h3 {
@@ -43,10 +44,10 @@ div > h3 {
   font-family: serif;
   font: Arial;
   font-size: 18px;
-}
 
-.mid-container > div {
-  margin: 20px;
+  div {
+    margin: 20px;
+  }
 }
 
 #canvas {
@@ -58,28 +59,28 @@ div > h3 {
   display: flex;
   flex-flow: column;
   justify-content: flex-start;
-}
 
-#country-form > input {
-  display: none;
-}
+  input {
+    display: none;
+  }
 
-#country-form > label {
-  padding: 12px;
-  margin: 6px;
-  font-family: sans-serif;
-  font: Helvetica;
-  font-size: 18px;
-  background-color: #f0f0f5;
-  text-align: center;
-  border-radius: 30px;
-  border: 2px solid #333333;
-}
+  label {
+    padding: 12px;
+    margin: 6px;
+    font-family: sans-serif;
+    font: Helvetica;
+    font-size: 18px;
+    background-color: #f0f0f5;
+    text-align: center;
+    border-radius: 30px;
+    border: 2px solid #333333;
+  }
 
-#country-form > input:hover+label{
-  background-color: #ffd699;
-}
+  input:hover+label{
+    background-color: #ffd699;
+  }
 
-#country-form > input:checked+label{
-  background-color: #ffad33;
+  input:checked+label{
+    background-color: #ffad33;
+  }
 }
