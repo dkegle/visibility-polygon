@@ -23,9 +23,9 @@ export default class StateManager {
     this.wasm_module._setPolygon(cd.buffer_ptr, cd.num_elements);
 
     this.wasm_module._runVisPoly(cd.viewpoint_x, cd.viewpoint_y);
-    let res_ptr = this.wasm_module._getVisPoly();
-    let res_sz = this.wasm_module._getVisPolySize();
-    let res = new Float64Array(this.wasm_module.HEAPF64.buffer, res_ptr, res_sz);
+    let result_ptr = this.wasm_module._getVisPoly();
+    let result_size = this.wasm_module._getVisPolySize();
+    let res = new Float64Array(this.wasm_module.HEAPF64.buffer, result_ptr, result_size);
     this.canvas.setViewpolygon(res);
     this.canvas.setCountry(this.current_country, this.color[this.current_country]);
     this.canvas.setViewpoint(cd.viewpoint_x, cd.viewpoint_y);

@@ -11,9 +11,9 @@
 
 // assuming view_point is in interior of plg,
 // and plg[0] == plg[plg.size() - 1]
-Polygon VisPoly::run(const Polygon& plg, const Point& view_point) {
+std::vector<double> VisPoly::run(const Polygon& plg, const Point& view_point) {
    if (plg.size() < 3)
-      return Polygon();
+      return std::vector<double>();
 
    std::vector<std::shared_ptr<Event>> events;
    events.reserve(plg.size());
@@ -114,11 +114,11 @@ Polygon VisPoly::run(const Polygon& plg, const Point& view_point) {
 
    if (state.empty()) {
       std::cout << "Error, initial state empty, exiting" << std::endl;
-      return Polygon();
+      return std::vector<double>();
    }
 
    // sweeping
-   Polygon result;
+   std::vector<double> result; // returns sequence of x and y coordinates
    std::cout << "Sweeping .. " << std::endl;
 
    Edge* prev_top = *state.begin();
@@ -147,20 +147,27 @@ Polygon VisPoly::run(const Polygon& plg, const Point& view_point) {
       if (state.empty()) { // rounding errors
          Point prev_intr;
          intersection(Line(*prev_top->from, *prev_top->to), Line(view_point, *events[i]->p_orig), prev_intr);
-         if (result.empty() || EuclideanDistance(result.back(), prev_intr) > GEOM_PRECISION)
-            result.push_back(prev_intr);
+         if (result.empty() ||
+          EuclideanDistance(Point(result[result.size()-2], result[result.size()-1]), prev_intr) > GEOM_PRECISION)
+          {
+            result.push_back(prev_intr.x);
+            result.push_back(prev_intr.y);
+          }
+
       }
       else {
          Edge* top = *state.begin();
          if (prev_top != top) {
             if (prev_top->to == top->from) {
-               result.push_back(*top->from);
+               result.push_back(top->from->x);
+               result.push_back(top->from->y);
             }
             else if (events[j]->p_orig == top->from) {
                if (i != j) {
                   Point p; // collinear vertices, add previous farthest
                   intersection(Line(*prev_top->from, *prev_top->to), Line(view_point, *events[j]->p_orig), p);
-                  result.push_back(p);
+                  result.push_back(p.x);
+                  result.push_back(p.y);
                }
                Point intr;
                intersection(Line(*top->from, *top->to), Line(view_point, *events[j]->p_orig), intr);
@@ -168,28 +175,38 @@ Polygon VisPoly::run(const Polygon& plg, const Point& view_point) {
                for (int k = i; k > j; --k) { // add all other vertices at this angle
                   if (EuclideanDistance(view_point, *events[k]->p_orig) < dist + GEOM_PRECISION)
                      break;
-                  result.push_back(*events[k]->p_orig);
+                  result.push_back(events[k]->p_orig->x);
+                  result.push_back(events[k]->p_orig->y);
                }
-               result.push_back(intr);
+               result.push_back(intr.x);
+               result.push_back(intr.y);
             }
             else if (events[j]->p_orig == prev_top->to) {
-               result.push_back(*prev_top->to);
+               result.push_back(prev_top->to->x);
+               result.push_back(prev_top->to->y);
                Point intr;
                intersection(Line(*top->from, *top->to), Line(view_point, *events[j]->p_orig), intr);
                double max_dist = EuclideanDistance(view_point, intr);
                for (int k = j + 1; k <= i; ++k) { // add all collinear vertices at this angle
                   if (EuclideanDistance(view_point, *events[k]->p_orig) > max_dist + GEOM_PRECISION)
                      break;
-                  result.push_back(*events[k]->p_orig);
+                  result.push_back(events[k]->p_orig->x);
+                  result.push_back(events[k]->p_orig->y);
                }
-               result.push_back(intr);
+               result.push_back(intr.x);
+               result.push_back(intr.y);
             }
             prev_top = *state.begin();
          }
       }
    }
-   if(EuclideanDistance(result.back(), result.front()) > GEOM_PRECISION)
-      result.push_back(result.front());   // make sure result[0] == result[result.size()-1]
+   if(EuclideanDistance(Point(result[0], result[1]),
+    Point(result[result.size()-2], result[result.size()-1])) > GEOM_PRECISION)
+    {
+      result.push_back(result[0]);  // make sure
+      result.push_back(result[1]);  // result[0] == result[result.size()-1]
+    }
+
    std::cout << "Done" << std::endl;
    return result;
 }

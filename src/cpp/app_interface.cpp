@@ -9,35 +9,32 @@
 extern "C" {
 
 // data
-Polygon g_plg;
-double* g_vis_poly = nullptr;
-int g_vis_poly_size = 0;
+Polygon g_Polygon;
+std::vector<double> g_Result;
 
 // api
 EMSCRIPTEN_KEEPALIVE
 void setPolygon(double* plg, int n){
-  g_plg.clear();
+  g_Polygon.clear();
   for(int i=1; i<n; i+=2){
-    g_plg.push_back(Point(plg[i-1], plg[i]));
+    g_Polygon.push_back(Point(plg[i-1], plg[i]));
   }
-  if(g_plg.size() > 0 && (g_plg.front().x != g_plg.back().x || g_plg.front().y != g_plg.back().y))
-    g_plg.push_back(g_plg.front());
+  if(g_Polygon.size() > 0 && (g_Polygon.front().x != g_Polygon.back().x ||
+    g_Polygon.front().y != g_Polygon.back().y))
+  {
+      g_Polygon.push_back(g_Polygon.front());
+  }
+
 }
 
 EMSCRIPTEN_KEEPALIVE
 double* getVisPoly(){
-  return g_vis_poly;
+  return g_Result.data();
 }
 
 EMSCRIPTEN_KEEPALIVE
 int getVisPolySize(){
-  return g_vis_poly_size;
-}
-
-EMSCRIPTEN_KEEPALIVE
-void freeVisPoly(){
-  free(g_vis_poly);
-  g_vis_poly_size=0;
+  return g_Result.size();
 }
 
 // returns 1 if point (x,y) is inside g_polygon, or 0 otherwise
@@ -48,8 +45,8 @@ int isInsidePolygon(double x, double y){
 
   Point intr;
   int num_intrs = 0;
-  for(int i=1; i<g_plg.size(); ++i){
-    LineSegment cur_seg(g_plg[i-1], g_plg[i]);
+  for(int i=1; i<g_Polygon.size(); ++i){
+    LineSegment cur_seg(g_Polygon[i-1], g_Polygon[i]);
 
     double d=distance(cur_seg, p);
     if(d < GEOM_PRECISION)
@@ -61,19 +58,12 @@ int isInsidePolygon(double x, double y){
   return num_intrs%2;
 }
 
-// calculates visibility polygon from (x,y) inside current g_plg
+// calculates visibility polygon from (x,y) inside current g_Polygon
 EMSCRIPTEN_KEEPALIVE
 void runVisPoly(double x, double y){
-  freeVisPoly();
-  Point vp(x,y); // viewpoint
-  VisPoly c_vp;
-  Polygon result = c_vp.run(g_plg, vp);
-  g_vis_poly_size = 2*result.size();
-  g_vis_poly = (double*)malloc(g_vis_poly_size*sizeof(double));
-  for(int i=0; i<result.size(); ++i){
-    g_vis_poly[2*i]=result[i].x;
-    g_vis_poly[2*i+1]=result[i].y;
-  }
+  Point viewpoint(x,y);
+  g_Result.clear();
+  g_Result = VisPoly().run(g_Polygon, viewpoint);
 }
 
 } // extern C

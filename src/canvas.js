@@ -80,11 +80,10 @@ export default class Canvas {
     this.x=x;
     this.y=y;
 
-    this.wasm_module._freeVisPoly();
     this.wasm_module._runVisPoly(x,y);
-    let res_ptr = this.wasm_module._getVisPoly();
-    let res_sz = this.wasm_module._getVisPolySize();
-    let res = new Float64Array(this.wasm_module.HEAPF64.buffer, res_ptr, res_sz);
+    let result_ptr = this.wasm_module._getVisPoly();
+    let result_size = this.wasm_module._getVisPolySize();
+    let res = new Float64Array(this.wasm_module.HEAPF64.buffer, result_ptr, result_size);
     this.setViewpolygon(res);
     this.draw();
   }

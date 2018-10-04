@@ -9,7 +9,8 @@ public:
 
    VisPoly() {}
 
-   Polygon run(const Polygon& plg, const Point& view_point);
+   // returns sequence of x and y coordinates
+   std::vector<double> run(const Polygon& plg, const Point& view_point);
 
 private:
    struct Edge;
