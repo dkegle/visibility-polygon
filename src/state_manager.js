@@ -10,7 +10,7 @@ export default class StateManager {
     // event listeners for changing countries
     this.country_form = document.getElementById("country-form");
     for(let i=0; i<this.country_form.length; i++){
-      this.country_form[i].addEventListener('onclick', _ => {
+      this.country_form[i].addEventListener('click', _ => {
         this.current_country = this.country_form[i].id;
         this.setActiveCountry(this.current_country);
       });
