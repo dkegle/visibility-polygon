@@ -17,5 +17,4 @@ let data_manager = new DataManager(Module, canvas.getWidth(), canvas.getHeight()
   initial_x, initial_y);
 let state_manager = new StateManager(Module, canvas, data_manager, initial_country, colors);
 
-canvas.updateViewpoint = data_manager.setNewViewpoint.bind(data_manager);
-Module.onRuntimeInitialized = state_manager.render;
+Module.onRuntimeInitialized = _ => state_manager.setActiveCountry(initial_country);

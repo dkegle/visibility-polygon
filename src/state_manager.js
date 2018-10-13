@@ -4,31 +4,34 @@ export default class StateManager {
     this.wasm_module = wasm_module;
     this.canvas = canvas;
     this.current_country = initial_country;
-    this.render = this.render.bind(this);
-    this.color = country_colors;
+    this.setActiveCountry = this.setActiveCountry.bind(this);
+    this.country_colors = country_colors;
 
+    // event listeners for changing countries
     this.country_form = document.getElementById("country-form");
     for(let i=0; i<this.country_form.length; i++){
-      this.country_form[i].onclick = _ => {
+      this.country_form[i].addEventListener('onclick', _ => {
         this.current_country = this.country_form[i].id;
-        this.render();
-      }
+        this.setActiveCountry(this.current_country);
+      });
     }
   }
 
-  async render(){
-    let cd = await this.data_manager.getCountryData(this.current_country);
+  async setActiveCountry(country){
+    let d = await this.data_manager.getCountryData(country);
 
-    this.canvas.setPolygon(cd.coordinates);
-    this.wasm_module._setPolygon(cd.buffer_ptr, cd.num_elements);
+    let self = this;
+    this.canvas.setData({
+      country_name: self.current_country,
+      country_color: self.country_colors[self.current_country],
+      viewpoint_x: d.viewpoint_x,
+      viewpoint_y: d.viewpoint_y,
+      plg: d.coordinates,
+      buffer_ptr: d.buffer_ptr,
+      buffer_size: d.num_elements,
+      onchange_callback: self.data_manager.changeViewpoint
+    });
 
-    this.wasm_module._runVisPoly(cd.viewpoint_x, cd.viewpoint_y);
-    let result_ptr = this.wasm_module._getVisPoly();
-    let result_size = this.wasm_module._getVisPolySize();
-    let res = new Float64Array(this.wasm_module.HEAPF64.buffer, result_ptr, result_size);
-    this.canvas.setViewpolygon(res);
-    this.canvas.setCountry(this.current_country, this.color[this.current_country]);
-    this.canvas.setViewpoint(cd.viewpoint_x, cd.viewpoint_y);
-    this.canvas.draw();
+    this.canvas.recalcVisibility(d.viewpoint_x, d.viewpoint_y);
   }
 }

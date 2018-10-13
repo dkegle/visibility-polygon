@@ -6,11 +6,12 @@ export default class DataManager {
     this.canvas_height = canvas_height;
     this.initial_x = initial_x;
     this.initial_y = initial_y;
+    this.changeViewpoint = this.changeViewpoint.bind(this);
   }
 
-  setNewViewpoint(country, x, y){
-    this.countries[country].viewpoint_x = x;
-    this.countries[country].viewpoint_y = y;
+  changeViewpoint({country, viewpoint_x, viewpoint_y}){
+    this.countries[country].viewpoint_x = viewpoint_x;
+    this.countries[country].viewpoint_y = viewpoint_y;
   }
 
   async getCountryData(country){
