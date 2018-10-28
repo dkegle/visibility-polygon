@@ -32,10 +32,6 @@ npm install
 npm run build-cpp
 npm run build-js
 ```
-To correctly serve .wasm files, use server provided by emscripten.
-```
-npm run emsc-server
-```
 The app should now run on http://localhost:8080/.
 
 

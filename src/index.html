@@ -1,0 +1,36 @@
+<html>
+<head>
+  <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon">
+  <meta charset="utf-8"/>
+  <title>Visibility polygon demo</title>
+</head>
+<body>
+
+<header>
+  <h1>Visibility polygon</h1>
+</header>
+
+<div class="mid-container">
+  <div>
+    <canvas id="canvas" tabindex="1" width="500" height="500">
+    </canvas>
+  </div>
+  <div>
+    <h3>Select country:</h3>
+    <form id="country-form" action="">
+      <input type="radio" name="country" id="slovenia" checked> <label for="slovenia">Slovenia</label>
+      <input type="radio" name="country" id="brazil"> <label for="brazil">Brazil</label>
+      <input type="radio" name="country" id="australia"> <label for="australia">Australia</label>
+      <input type="radio" name="country" id="uk"> <label for="uk">United Kingdom</label>
+    </form>
+  </div>
+</div>
+<div class="mid-container">
+  Click and drag viewpoint inside polygon.
+</div>
+<footer>
+  <h3> by dkegle, MIT license </h3>
+</footer>
+<script src="build/vis_poly.js"></script>
+</body>
+</html>
